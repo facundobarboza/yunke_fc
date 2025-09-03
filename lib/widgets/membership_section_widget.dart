@@ -58,7 +58,7 @@ class MembershipSectionWidget extends StatelessWidget {
                         'Descubre todos los beneficios exclusivos para socios del Yunke FC',
                         style: TextStyle(
                           fontSize: 14,
-                          color: AppTheme.yunkeWhite.withOpacity(0.9),
+                          color: AppTheme.yunkeWhite.withValues(alpha: 0.9),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -83,7 +83,7 @@ class MembershipSectionWidget extends StatelessWidget {
                 Icon(
                   Icons.card_membership,
                   size: 60,
-                  color: AppTheme.yunkeWhite.withOpacity(0.8),
+                  color: AppTheme.yunkeWhite.withValues(alpha: 0.8),
                 ),
               ],
             ),

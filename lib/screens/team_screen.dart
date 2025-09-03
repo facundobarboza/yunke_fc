@@ -156,10 +156,12 @@ class TeamScreen extends StatelessWidget {
                   stops: const [0.3, 1.0],
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
-                  colors: [
-                    Colors.black87,
-                    Colors.black12
-                  ],
+                  colors:
+                    player.category == 'masculino'
+                        ? [AppTheme.yunkeBlue.withValues(alpha: 0.9),
+                        AppTheme.yunkeBlue.withValues(alpha: 0.1)]
+                        : [AppTheme.yunkeRed.withValues(alpha: 0.9),
+                        AppTheme.yunkeRed.withValues(alpha: 0.1)],
                 ),
               ),
               padding: const EdgeInsets.only(left: 12, right: 12, top: 5, bottom: 12),

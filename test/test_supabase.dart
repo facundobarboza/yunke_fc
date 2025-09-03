@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void testSupabaseConnection() async {
@@ -7,9 +8,13 @@ void testSupabaseConnection() async {
         .select()
         .limit(1);
     
-    print('✅ Supabase conectado correctamente!');
-    print('📊 Datos encontrados: ${response.length}');
+    if (kDebugMode) {
+      print('✅ Supabase conectado correctamente!');
+      print('📊 Datos encontrados: ${response.length}');
+    }
   } catch (e) {
-    print('❌ Error conectando con Supabase: $e');
+    if (kDebugMode) {
+      print('❌ Error conectando con Supabase: $e');
+    }
   }
 }

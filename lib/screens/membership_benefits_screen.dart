@@ -23,7 +23,7 @@ class MembershipBenefitsScreen extends StatelessWidget {
             padding: EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [AppTheme.yunkeRed, AppTheme.yunkeRed.withOpacity(0.8)],
+                colors: [AppTheme.yunkeRed, AppTheme.yunkeRed.withValues(alpha: 0.8)],
               ),
             ),
             child: Column(
@@ -48,7 +48,7 @@ class MembershipBenefitsScreen extends StatelessWidget {
                   'Disfruta de todos estos beneficios exclusivos',
                   style: TextStyle(
                     fontSize: 16,
-                    color: AppTheme.yunkeWhite.withOpacity(0.9),
+                    color: AppTheme.yunkeWhite.withValues(alpha: 0.9),
                   ),
                   textAlign: TextAlign.center,
                 ),
@@ -185,7 +185,7 @@ class MembershipBenefitsScreen extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: AppTheme.yunkeRed.withOpacity(0.1),
+                color: AppTheme.yunkeRed.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(25),
               ),
               child: Icon(

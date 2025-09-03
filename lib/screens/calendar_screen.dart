@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/match.dart';
@@ -16,6 +17,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
   final _supabaseService = SupabaseService();
   List<Match> _matches = [];
   bool _isLoading = true;
+  StreamSubscription? _matchesSubscription;
 
   @override
   void initState() {
@@ -23,15 +25,23 @@ class _CalendarScreenState extends State<CalendarScreen> {
     _setupMatchesStream();
   }
 
+  @override
+  void dispose() {
+    _matchesSubscription?.cancel();
+    super.dispose();
+  }
+
   void _setupMatchesStream() {
-    _supabaseService.getAllMatches().listen(
+    _matchesSubscription = _supabaseService.getAllMatches().listen(
       (matches) {
+        if (!mounted) return;
         setState(() {
           _matches = matches;
           _isLoading = false;
         });
       },
       onError: (error) {
+        if (!mounted) return;
         setState(() {
           _isLoading = false;
         });
@@ -76,6 +86,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
                 )
               : RefreshIndicator(
                   onRefresh: () async {
+                    if (!mounted) return;
                     setState(() {
                       _isLoading = true;
                     });
@@ -318,7 +329,7 @@ class _TeamInfo extends StatelessWidget {
               height: 40,
               width: 40,
               fit: BoxFit.contain,
-              errorBuilder: (_, __, ___) => const Icon(
+              errorBuilder: (_, _, _) => const Icon(
                 Icons.sports_soccer,
                 size: 40,
                 color: AppTheme.yunkeBlue,

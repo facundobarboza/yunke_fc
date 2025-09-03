@@ -79,7 +79,7 @@ class TeamSectionsWidget extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 color,
-                color.withOpacity(0.8),
+                color.withValues(alpha: 0.8),
               ],
             ),
           ),
@@ -105,7 +105,7 @@ class TeamSectionsWidget extends StatelessWidget {
               Text(
                 'Ver Plantel',
                 style: TextStyle(
-                  color: AppTheme.yunkeWhite.withOpacity(0.9),
+                  color: AppTheme.yunkeWhite.withValues(alpha: 0.9),
                   fontSize: 12,
                 ),
                 textAlign: TextAlign.center,

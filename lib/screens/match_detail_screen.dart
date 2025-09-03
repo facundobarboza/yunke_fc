@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import '../models/match.dart';
 import '../utils/theme.dart';
@@ -10,7 +11,7 @@ class MatchDetailScreen extends StatefulWidget {
   const MatchDetailScreen({super.key, required this.match});
 
   @override
-  _MatchDetailScreenState createState() => _MatchDetailScreenState();
+  State<MatchDetailScreen> createState() => _MatchDetailScreenState();
 }
 
 class _MatchDetailScreenState extends State<MatchDetailScreen> {
@@ -29,7 +30,9 @@ class _MatchDetailScreenState extends State<MatchDetailScreen> {
         _isLocaleInitialized = true;
       });
     } catch (e) {
-      print('Error inicializando locale: $e');
+      if (kDebugMode) {
+        print('Error inicializando locale: $e');
+      }
       // Si falla, usar formateo básico
       setState(() {
         _isLocaleInitialized = true;
@@ -65,7 +68,7 @@ class _MatchDetailScreenState extends State<MatchDetailScreen> {
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppTheme.yunkeBlue, AppTheme.yunkeBlue.withOpacity(0.8)],
+                  colors: [AppTheme.yunkeBlue, AppTheme.yunkeBlue],
                 ),
               ),
               child: Column(

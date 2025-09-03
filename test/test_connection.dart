@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 Future<void> testSupabaseConnection() async {
@@ -8,8 +9,12 @@ Future<void> testSupabaseConnection() async {
         .select('name')
         .limit(1);
     
-    print('✅ Conexión exitosa! Datos: $response');
+    if (kDebugMode) {
+      print('✅ Conexión exitosa! Datos: $response');
+    }
   } catch (e) {
-    print('❌ Error de conexión: $e');
+    if (kDebugMode) {
+      print('❌ Error de conexión: $e');
+    }
   }
 }

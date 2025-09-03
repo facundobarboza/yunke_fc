@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'screens/main_screen.dart';
@@ -10,15 +11,21 @@ void main() async {
   const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkbnVrdG5idXNveHl6c2Zva2d3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2MTk5OTYsImV4cCI6MjA3MjE5NTk5Nn0.Jx-9iJkSJkFykCb0EiFj1b-S0qcpne9DonqR6cKVPy4';
   
   if (supabaseUrl.contains('YOUR_SUPABASE') || supabaseKey.contains('YOUR_SUPABASE')) {
-    print('❌ ERROR: Debes configurar las credenciales de Supabase en main.dart');
+    if (kDebugMode) {
+      print('❌ ERROR: Debes configurar las credenciales de Supabase en main.dart');
+    }
     return;
   }
   
   try {
     await Supabase.initialize(url: supabaseUrl, anonKey: supabaseKey);
-    print('✅ Supabase inicializado correctamente');
+    if (kDebugMode) {
+      print('✅ Supabase inicializado correctamente');
+    }
   } catch (e) {
-    print('❌ Error inicializando Supabase: $e');
+    if (kDebugMode) {
+      print('❌ Error inicializando Supabase: $e');
+    }
     return;
   }
   
@@ -29,7 +36,7 @@ class YunkeFCApp extends StatefulWidget {
   const YunkeFCApp({super.key});
 
   @override
-  _YunkeFCAppState createState() => _YunkeFCAppState();
+  State<YunkeFCApp> createState() => _YunkeFCAppState();
 }
 
 class _YunkeFCAppState extends State<YunkeFCApp> {
