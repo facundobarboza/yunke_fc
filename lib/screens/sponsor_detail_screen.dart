@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/sponsor.dart';
 import '../utils/theme.dart';
@@ -106,6 +107,32 @@ class SponsorDetailScreen extends StatelessWidget {
                     ),
                   const SizedBox(height: 16),
                   
+                  // Horarios
+                  if (sponsor.openingHours.isNotEmpty)
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Horarios de atención',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: AppTheme.yunkeBlue,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+
+                        // Horarios
+                        _buildContactItem(
+                          Icons.access_time,
+                          null,
+                          sponsor.openingHours,
+                          null,
+                        ),
+                        const SizedBox(height: 16),
+                      ],
+                    ),
+
                   // Contacto
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,6 +147,15 @@ class SponsorDetailScreen extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       
+                      //WhatsApp
+                      if (sponsor.whatsapp.isNotEmpty)
+                        _buildContactItem(
+                          FontAwesomeIcons.whatsapp,
+                          'WhatsApp',
+                          sponsor.whatsapp,
+                          () => _launchUrl('https://wa.me/${sponsor.whatsapp.replaceAll(RegExp(r'[^0-9]'), '')}'),
+                        ),
+
                       // Teléfono
                       if (sponsor.phone.isNotEmpty)
                         _buildContactItem(
@@ -160,13 +196,14 @@ class SponsorDetailScreen extends StatelessWidget {
                 ],
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildContactItem(IconData icon, String label, String value, VoidCallback? onTap) {
+  Widget _buildContactItem(IconData icon, String? label, String value, VoidCallback? onTap) {
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -183,6 +220,7 @@ class SponsorDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (label != null)
                   Text(
                     label,
                     style: TextStyle(

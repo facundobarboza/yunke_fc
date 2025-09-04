@@ -5,8 +5,10 @@ class Sponsor {
   final String description;
   final String website;
   final String phone;
+  final String whatsapp;
   final String email;
   final String address;
+  final String openingHours;
   final List<String> services;
 
   Sponsor({
@@ -16,8 +18,10 @@ class Sponsor {
     required this.description,
     required this.website,
     required this.phone,
+    required this.whatsapp,
     required this.email,
     required this.address,
+    required this.openingHours,
     required this.services,
   });
 
@@ -29,8 +33,10 @@ class Sponsor {
       description: map['description'] ?? '',
       website: map['website'] ?? '',
       phone: map['phone'] ?? '',
+      whatsapp: map['whatsapp'] ?? '',
       email: map['email'] ?? '',
       address: map['address'] ?? '',
+      openingHours: map['opening_hours'] ?? '',
       services: List<String>.from(map['services'] ?? []),
     );
   }
@@ -43,8 +49,10 @@ class Sponsor {
       'description': description,
       'website': website,
       'phone': phone,
+      'whatsapp': whatsapp,
       'email': email,
       'address': address,
+      'opening_hours': openingHours,
       'services': services,
     };
   }

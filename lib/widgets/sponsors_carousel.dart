@@ -18,21 +18,21 @@ class SponsorsCarousel extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           return SizedBox(
-            height: 150,
+            height: 200,
             child: Center(child: Text('Error al cargar sponsors')),
           );
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
           return SizedBox(
-            height: 150,
+            height: 200,
             child: Center(child: CircularProgressIndicator()),
           );
         }
 
         return CarouselSlider(
           options: CarouselOptions(
-            height: 160,
+            height: 200,
             autoPlay: true,
             autoPlayInterval: Duration(seconds: 5),
             viewportFraction: 0.9,
@@ -45,13 +45,18 @@ class SponsorsCarousel extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SponsorDetailScreen(sponsor: sponsor),
+                        builder: (context) =>
+                            SponsorDetailScreen(sponsor: sponsor),
                       ),
                     );
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    margin: EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+                    height: MediaQuery.of(context).size.height,
+                    margin: EdgeInsets.symmetric(
+                      horizontal: 5.0,
+                      vertical: 10.0,
+                    ),
                     decoration: BoxDecoration(
                       color: AppTheme.yunkeWhite,
                       borderRadius: BorderRadius.circular(6),
@@ -71,7 +76,7 @@ class SponsorsCarousel extends StatelessWidget {
                           Center(
                             child: CachedNetworkImage(
                               imageUrl: sponsor.logo,
-                              fit: BoxFit.cover,
+                              fit: BoxFit.fitWidth,
                               placeholder: (context, url) => CircularProgressIndicator(),
                               errorWidget: (context, url, error) => Icon(
                                 Icons.image,

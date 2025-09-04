@@ -75,39 +75,64 @@ class _CalendarScreenState extends State<CalendarScreen> {
               ),
             )
           : _matches.isEmpty
-              ? const Center(
-                  child: Text(
-                    'No hay partidos programados',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  ),
-                )
-              : RefreshIndicator(
-                  onRefresh: () async {
-                    if (!mounted) return;
-                    setState(() {
-                      _isLoading = true;
-                    });
-                    // La actualización ocurrirá automáticamente a través del stream
-                  },
-                  child: ListView.builder(
-                    itemCount: groupedMatches.length,
-                    itemBuilder: (context, index) {
-                      final date = groupedMatches.keys.elementAt(index);
-                      final dateMatches = groupedMatches[date]!;
-
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _DateHeader(date: date),
-                          ...dateMatches.map((match) => _MatchCard(match: match)),
-                        ],
+          ? const Center(
+              child: Text(
+                'No hay partidos programados',
+                style: TextStyle(fontSize: 16, color: Colors.grey),
+              ),
+            )
+          : RefreshIndicator(
+              onRefresh: () async {
+                if (!mounted) return;
+                setState(() {
+                  _isLoading = true;
+                });
+                // Creamos un Completer para manejar la actualización
+                final completer = Completer();
+                // Nos suscribimos a un solo evento del stream
+                _supabaseService
+                    .getAllMatches()
+                    .first
+                    .then((matches) {
+                      if (!mounted) return;
+                      setState(() {
+                        _matches = matches;
+                        _isLoading = false;
+                      });
+                      completer.complete();
+                    })
+                    .catchError((error) {
+                      if (!mounted) return;
+                      setState(() {
+                        _isLoading = false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text('Error al actualizar: $error'),
+                          backgroundColor: Colors.red,
+                        ),
                       );
-                    },
-                  ),
-                ),
+                      completer
+                          .complete(); // Completamos incluso en caso de error
+                    });
+                return completer.future;
+              },
+              child: ListView.builder(
+                itemCount: groupedMatches.length,
+                itemBuilder: (context, index) {
+                  final date = groupedMatches.keys.elementAt(index);
+                  final dateMatches = groupedMatches[date]!;
+
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _DateHeader(date: date),
+                      ...dateMatches.map((match) => _MatchCard(match: match)),
+                    ],
+                  );
+                },
+              ),
+            ),
     );
   }
 
@@ -125,8 +150,7 @@ class _CalendarScreenState extends State<CalendarScreen> {
       grouped[date]!.add(match);
     }
     return Map.fromEntries(
-      grouped.entries.toList()
-        ..sort((a, b) => a.key.compareTo(b.key)),
+      grouped.entries.toList()..sort((a, b) => a.key.compareTo(b.key)),
     );
   }
 }
@@ -139,15 +163,16 @@ class _DateHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final now = DateTime.now();
-    final isToday = date.year == now.year &&
-        date.month == now.month &&
-        date.day == now.day;
+    final isToday =
+        date.year == now.year && date.month == now.month && date.day == now.day;
 
     return Container(
       padding: const EdgeInsets.all(16.0),
       color: Colors.grey[100],
       child: Text(
-        isToday ? 'HOY' : DateFormat('EEEE d MMMM', 'es').format(date).toUpperCase(),
+        isToday
+            ? 'HOY'
+            : DateFormat('EEEE d MMMM', 'es').format(date).toUpperCase(),
         style: const TextStyle(
           fontSize: 15,
           fontWeight: FontWeight.bold,
@@ -177,9 +202,7 @@ class _MatchCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         elevation: 4,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(6),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         child: Padding(
           padding: const EdgeInsets.all(16),
           child: Column(
@@ -206,7 +229,7 @@ class _MatchCard extends StatelessWidget {
             style: const TextStyle(
               color: AppTheme.yunkeBlue,
               fontWeight: FontWeight.w500,
-              fontSize: 12
+              fontSize: 12,
             ),
           ),
         ),
@@ -236,18 +259,12 @@ class _MatchCard extends StatelessWidget {
   Widget _buildTeams() {
     return Row(
       children: [
-        _TeamInfo(
-          teamName: match.homeTeam,
-          logoUrl: match.homeLogo,
-        ),
+        _TeamInfo(teamName: match.homeTeam, logoUrl: match.homeLogo),
         Column(
           children: [
             Container(
               margin: const EdgeInsets.only(top: 4),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 2,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
               decoration: BoxDecoration(
                 color: match.homeScore != null && match.awayScore != null
                     ? AppTheme.yunkeBlue
@@ -256,8 +273,8 @@ class _MatchCard extends StatelessWidget {
               ),
               child: Text(
                 match.homeScore != null && match.awayScore != null
-                ? '${match.homeScore} - ${match.awayScore}'
-                : DateFormat('HH:mm').format(match.matchDate),
+                    ? '${match.homeScore} - ${match.awayScore}'
+                    : DateFormat('HH:mm').format(match.matchDate),
                 style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   color: AppTheme.yunkeWhite,
@@ -270,10 +287,7 @@ class _MatchCard extends StatelessWidget {
                 match.matchDate.year == DateTime.now().year)
               Container(
                 margin: const EdgeInsets.only(top: 4),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 8,
-                  vertical: 2,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
                   color: AppTheme.yunkeRedLight,
                   borderRadius: BorderRadius.circular(4),
@@ -289,10 +303,7 @@ class _MatchCard extends StatelessWidget {
               ),
           ],
         ),
-        _TeamInfo(
-          teamName: match.awayTeam,
-          logoUrl: match.awayLogo,
-        ),
+        _TeamInfo(teamName: match.awayTeam, logoUrl: match.awayLogo),
       ],
     );
   }
@@ -303,7 +314,7 @@ class _MatchCard extends StatelessWidget {
       style: const TextStyle(
         color: AppTheme.yunkeBlue,
         fontWeight: FontWeight.w500,
-        fontSize: 12
+        fontSize: 12,
       ),
     );
   }
@@ -313,10 +324,7 @@ class _TeamInfo extends StatelessWidget {
   final String teamName;
   final String? logoUrl;
 
-  const _TeamInfo({
-    required this.teamName,
-    this.logoUrl,
-  });
+  const _TeamInfo({required this.teamName, this.logoUrl});
 
   @override
   Widget build(BuildContext context) {
@@ -345,10 +353,7 @@ class _TeamInfo extends StatelessWidget {
           Text(
             teamName,
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
             overflow: TextOverflow.ellipsis,
             maxLines: 2,
           ),
